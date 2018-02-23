@@ -1,3 +1,5 @@
+import pandas as pd
+
 def cumpond_pnl(r):
     return (r+1).product()-1
 
