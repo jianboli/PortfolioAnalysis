@@ -1,4 +1,7 @@
+import numpy as np
+import statsmodels.api as sm
 import pandas as pd
+
 
 def cumpond_pnl(r):
     return (r+1).product()-1
@@ -27,7 +30,7 @@ def mdd(r):
     dd = -(cum/peak-1)
     return(dd.max())
 
-def statitics(r, b=None, rf=None, freq=12):
+def statistics(r, b=None, rf=None, freq=12):
     """
     Generate the portfolio return matrix from the monthly P&L including the following:
         Total return:
@@ -36,6 +39,8 @@ def statitics(r, b=None, rf=None, freq=12):
         Sharpe Ratio
         Percentage Positive Month/Day
         MDD
+        Skewness
+        Kurtosis
     If b is supplied then the following will be included
         Information Ratio
         Correlation with Bechmark
@@ -53,11 +58,22 @@ def statitics(r, b=None, rf=None, freq=12):
     stat.append(('Total Return', trr))
     stat.append(('Annual Return', (1+trr)**(freq/n)-1))
     stat.append(("Volatility", vol*np.sqrt(freq)))
-    stat.append(('Sharp Ratio', (r-rf).mean()/vol*np.sqrt(freq)))
+    stat.append(('Sharp Ratio', (r.values-rf.values).mean()/vol*np.sqrt(freq)))
     stat.append(('Percentage Positive Month', (r>0).sum()/n))
     stat.append(('MDD', mdd(r)))
+    stat.append(('Skewness', r.skew()))
+    stat.append(('Kurtosis', r.kurtosis()))
+    
     if b is not None:
-        raise NotImplementedError("To be implemented")
-        
-    df = pd.DataFrame(stat, columns=['Label', 'Stat']).set_index('Label')
-    return df['Stat']
+        ex_return = r.values-b.values
+        stat.append(('Information Ratio', ex_return.mean()/ex_return.std()*np.sqrt(freq)))
+        stat.append(('Correlation with Bechmark', np.corrcoef(r, b)[0, 1]))
+
+        X = sm.add_constant(b.values)
+        param = sm.OLS(r.values, X).fit().params
+
+        stat.append(('Alpah (Non Aunnalized)', param[0]))
+        stat.append(('Beta', param[1]))
+
+    df = pd.DataFrame(stat, columns=['Summary', 'Stat'])
+    return df
