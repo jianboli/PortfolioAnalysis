@@ -2,7 +2,7 @@
 
 import numpy as np
 import pandas as pd
-import matplotlib.pylab as plt
+#import matplotlib.pylab as plt
 import tia.bbg.datamgr as dm
 from datetime import timedelta
 
@@ -50,6 +50,7 @@ def get_period_return(ptf, ed_date):
     daily_return.iloc[0, daily_return.columns.get_loc('DtdPNL')] = daily_return.iloc[
         0, daily_return.columns.get_loc('TotalReturn')]
     return (daily_return[['DtdPNL']], tot)
+	
 
 
 if __name__ == "__main__":
