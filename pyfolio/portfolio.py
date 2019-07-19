@@ -3,7 +3,7 @@ import statsmodels.api as sm
 import pandas as pd
 
 
-def cumpond_pnl(r):
+def cumpound_pnl(r):
     return (r+1).product()-1
 
 def format_pnl(pnl_s):
@@ -16,7 +16,7 @@ def format_pnl(pnl_s):
     pnl_df['Month'] = pnl_df['Monthly_End'].dt.month
 
     pnl_df_pivot = pnl_df.pivot(index="Month", columns='Year', values='P&L')
-    pnl_yearly = pnl_df.groupby('Year').agg({'P&L': cumpond_pnl})
+    pnl_yearly = pnl_df.groupby('Year').agg({'P&L': cumpound_pnl})
     pnl_yearly.columns=["Yearly"]
     pnl_yearly_cum = (pnl_yearly+1).cumprod()-1
     pnl_yearly_cum.columns = ["Cumulative"]
