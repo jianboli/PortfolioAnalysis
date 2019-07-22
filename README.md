@@ -10,4 +10,4 @@ pip install git+https://github.com/jianboli/pyfolio
 # dependence
 numpy, pandas, tia
 
-At the same time, this package heavily relay on Bloomberg. So you will need local Bloomberg open and API service aviable to use most of the functionailities.
+At the same time, this package heavily rely on Bloomberg. So you will need local Bloomberg open and API service aviable to use most of the functionailities.
