@@ -28,7 +28,7 @@ def mdd(r):
     cum = (r+1).cumprod()
     peak = cum.cummax()
     dd = -(cum/peak-1)
-    return(dd.max())
+    return dd.max()
 
 def statistics(r, b=None, rf=None, freq=12):
     """
